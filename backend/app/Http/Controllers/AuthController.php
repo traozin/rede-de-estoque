@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use \Illuminate\Http\JsonResponse;
 use Throwable;
+use App\Helpers\ApiResponse;
 
 class AuthController extends Controller {
 
@@ -27,6 +28,10 @@ class AuthController extends Controller {
             ]);
 
             if ($validator->fails()) {
+                return ApiResponse::error(
+                    message: 'Validation failed',
+                    code: 422
+                );
                 return response()->json($validator->errors(), 422);
             }
 
@@ -38,9 +43,19 @@ class AuthController extends Controller {
 
             $token = JWTAuth::fromUser($user);
 
-            return response()->json(compact('user', 'token'), 201);
+            return ApiResponse::success(
+                message: 'User registered successfully',
+                data: [
+                    'user' => $user,
+                    'token' => $token
+                ],
+                code: 201
+            );
         } catch (Throwable $e) {
-            return response()->json(['error' => 'Registration failed ' . $e->getMessage()], $e->getCode() ?: 500);
+            return ApiResponse::error(
+                message: 'Registration failed ' . $e->getMessage(),
+                code: $e->getCode()
+            );
         }
     }
 
@@ -55,12 +70,24 @@ class AuthController extends Controller {
             $credentials = $request->only('email', 'password');
 
             if (!$token = JWTAuth::attempt($credentials)) {
-                return response()->json(['error' => 'Unauthorized'], 401);
+                return ApiResponse::error(
+                    message: 'Unauthorized',
+                    code: 401
+                );
             }
 
-            return response()->json(compact('token'));
+            return ApiResponse::success(
+                message: 'Login successful',
+                data: [
+                    'token' => $token
+                ],
+                code: 200
+            );
         } catch (Throwable $e) {
-            return response()->json(['error' => 'Login failed ' . $e->getMessage()], $e->getCode() ?: 500);
+            return ApiResponse::error(
+                message: 'Login failed ' . $e->getMessage(),
+                code: $e->getCode()
+            );
         }
     }
 
@@ -71,9 +98,15 @@ class AuthController extends Controller {
      */
     public function me() {
         try {
-            return response()->json(auth()->user());
+            return ApiResponse::success(
+                message: 'User fetched successfully',
+                data: auth()->user()
+            );
         } catch (Throwable $e) {
-            return response()->json(['error' => 'Failed to fetch user ' . $e->getMessage()], $e->getCode() ?: 500);
+            return ApiResponse::error(
+                message: 'Failed to fetch user ' . $e->getMessage(),
+                code: $e->getCode()
+            );
         }
     }
 
@@ -85,9 +118,15 @@ class AuthController extends Controller {
     public function logout() {
         try {
             auth()->logout();
-            return response()->json(['message' => 'Successfully logged out']);
+            return ApiResponse::success(
+                message: 'User logged out successfully',
+                code: 200
+            );
         } catch (Throwable $e) {
-            return response()->json(['error' => 'Logout failed ' . $e->getMessage()], $e->getCode() ?: 500);
+            return ApiResponse::error(
+                message: 'Logout failed ' . $e->getMessage(),
+                code: $e->getCode()
+            );
         }
     }
 
@@ -102,7 +141,10 @@ class AuthController extends Controller {
                 'token' => auth()->refresh()
             ]);
         } catch (Throwable $e) {
-            return response()->json(['error' => 'Token refresh failed ' . $e->getMessage()], $e->getCode() ?: 500);
+            return ApiResponse::error(
+                message: 'Token refresh failed ' . $e->getMessage(),
+                code: $e->getCode()
+            );
         }
     }
 }
