@@ -9,6 +9,11 @@ if [ ! -f .env ]; then
   cp .env.example .env
 fi
 
+if ! grep -q "^JWT_SECRET=" .env; then
+  echo "Gerando JWT_SECRET..."
+  php artisan jwt:secret
+fi
+
 composer install
 
 php artisan key:generate
