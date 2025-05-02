@@ -13,7 +13,7 @@ Route::get('/ping', function () {
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 
-Route::group(['middleware' => 'jwt.auth'], function () {
+Route::group(['middleware' => RouteMiddlewares::JWT_AUTH], function () {
     Route::get('me', [AuthController::class, 'me']);
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
@@ -21,7 +21,7 @@ Route::group(['middleware' => 'jwt.auth'], function () {
 });
 
 // rotas apenas pra admin
-Route::group(['middleware' => ['jwt.auth', RouteMiddlewares::ADMIN]], function () {
+Route::group(['middleware' => [RouteMiddlewares::JWT_AUTH, RouteMiddlewares::ADMIN]], function () {
     Route::get('/usuarios', [UserController::class, 'index']);
     Route::patch('/usuarios/{id}/role', [UserController::class, 'updateRole']);
     Route::delete('/usuarios/{id}', [UserController::class, 'destroy']);
