@@ -9,7 +9,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Helpers\ApiResponse;
 
 class JwtAuthenticate {
-    
+
     /**
      * Handle an incoming request.
      * 
@@ -19,19 +19,20 @@ class JwtAuthenticate {
     public function handle(Request $request, Closure $next) {
         try {
             $user = JWTAuth::parseToken()->authenticate();
+
             if (!$user) {
                 return ApiResponse::error(
                     message: 'User not found',
                     code: 404
                 );
             }
+
+            return $next($request);
         } catch (JWTException $e) {
             return ApiResponse::error(
-                message: 'Token is invalid or expired',
+                message: 'Token is invalid or expired - ' . $e->getMessage(),
                 code: 401
             );
         }
-
-        return $next($request);
     }
 }
