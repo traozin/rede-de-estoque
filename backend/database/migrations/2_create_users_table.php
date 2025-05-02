@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
+            $table->foreignId('role_id')->constrained();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
@@ -33,6 +34,9 @@ return new class extends Migration {
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
+
+        $this->populateRole();
+        $this->populateUser();
     }
 
     /**
@@ -42,5 +46,27 @@ return new class extends Migration {
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
+    }
+
+    private function populateRole() {
+        DB::table('roles')->insertOrIgnore([
+            ['id' => 1, 'name' => 'Administrador'],
+            ['id' => 2, 'name' => 'Operador'],
+            ['id' => 3, 'name' => 'Usuário comum'],
+        ]);
+    }
+
+    private function populateUser() {
+        DB::table('users')->insertOrIgnore([
+            [
+                'id' => 1,
+                'name' => 'Admin User',
+                'email' => 'admin@example.com',
+                'password' => bcrypt('password'),
+                'role_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
     }
 };
