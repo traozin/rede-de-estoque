@@ -30,9 +30,9 @@ class AuthController extends Controller {
             if ($validator->fails()) {
                 return ApiResponse::error(
                     message: 'Validation failed',
+                    data: $validator->errors(),
                     code: 422
                 );
-                return response()->json($validator->errors(), 422);
             }
 
             $user = User::create([
