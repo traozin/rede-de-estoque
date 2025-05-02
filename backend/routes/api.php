@@ -2,16 +2,25 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
 
 Route::get('/ping', function () {
-    return response()->json(['message' => 'pongaaaaaaaaaaaaaaaaaaaaaa']);
+    return response()->json(['message' => 'pong']);
 });
 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 
-Route::middleware('auth:api')->group(function () {
+Route::group(['middleware' => \App\Http\Middleware\JwtAuthenticate::class], function () {
     Route::get('me', [AuthController::class, 'me']);
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
+    Route::put('/usuarios/{id}', [UserController::class, 'update']);
+});
+
+// rotas apenas pra admin
+Route::group(['middleware' => \App\Http\Middleware\AdminMiddleware::class], function () {
+    Route::get('/usuarios', [UserController::class, 'index']);
+    Route::patch('/usuarios/{id}/role', [UserController::class, 'updateRole']);
+    Route::delete('/usuarios/{id}', [UserController::class, 'destroy']);
 });
