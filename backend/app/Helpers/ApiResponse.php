@@ -1,10 +1,11 @@
 <?php
 
-// app/Helpers/ApiResponse.php
 namespace App\Helpers;
 
+use App\Helpers\ArrayUtils;
+ 
 class ApiResponse {
-    public static function success($message, $data = null, $code = 200) {
+    public static function success($message, $code = 200, $data = null) {
         return self::buildResponse(
             'Success',
             $message,
@@ -13,7 +14,7 @@ class ApiResponse {
         );
     }
 
-    public static function error($message, $data = null, $code = 500) {
+    public static function error($message, $code = 500, $data = null) {
         return self::buildResponse(
             'Error',
             $message,
@@ -23,17 +24,12 @@ class ApiResponse {
     }
 
     private static function buildResponse($status, $message, $data = null, $code) {
-        // TODO: remover índices do array que estão nulos antes de enviar
-        $data = [
-            'status' => $status,
-            'message' => $message,
-            'data' => $data,
-        ];
-        
-        return response()->json([
+        $array = ArrayUtils::clearArray([
             'status' => $status,
             'message' => $message,
             'data' => $data
-        ], $code);
+        ], true);
+
+        return response()->json($array, $code);
     }
 }
