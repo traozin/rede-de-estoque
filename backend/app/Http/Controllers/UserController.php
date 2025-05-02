@@ -6,11 +6,12 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Helpers\ApiResponse;
 use Throwable;
+use App\Helpers\RouteMiddlewares;
 
 class UserController extends Controller {
-
+    
     public function __construct() {
-        $this->middleware('admin')->only(['index', 'updateRole', 'destroy']);
+        $this->middleware(RouteMiddlewares::ADMIN)->only(['index', 'updateRole', 'destroy']);
     }
 
     public function index() {
