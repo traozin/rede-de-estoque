@@ -19,7 +19,7 @@ class UserController extends Controller {
         } catch (Throwable $e) {
             return ApiResponse::error(
                 message: 'Error fetching users - ' . $e->getMessage(),
-                code: $e->getCode()
+                code: $e->getCode() ?: 500
             );
         }
     }
@@ -42,14 +42,11 @@ class UserController extends Controller {
 
             $user->update($request->only('name', 'email'));
 
-            return ApiResponse::success(
-                message: 'Profile updated successfully',
-                data: $user
-            );
+            return ApiResponse::success(message: 'Profile updated successfully', code: 200, data: $user);
         } catch (Throwable $e) {
             return ApiResponse::error(
                 message: 'Error updating user - ' . $e->getMessage(),
-                code: $e->getCode()
+                code: $e->getCode() ?: 500
             );
         }
     }
@@ -64,14 +61,11 @@ class UserController extends Controller {
             $user->role = $request->role;
             $user->save();
 
-            return ApiResponse::success(
-                message: 'Role updated successfully',
-                data: $user
-            );
+            return ApiResponse::success(message: 'Role updated successfully', code: 200, data: $user);
         } catch (Throwable $e) {
             return ApiResponse::error(
                 message: 'Error updating user role - ' . $e->getMessage(),
-                code: $e->getCode()
+                code: $e->getCode() ?: 500
             );
         }
     }
@@ -81,13 +75,11 @@ class UserController extends Controller {
             $user = User::findOrFail($id);
             $user->delete();
 
-            return ApiResponse::success(
-                message: 'User deleted successfully'
-            );
+            return ApiResponse::success(message: 'User deleted successfully');
         } catch (Throwable $e) {
             return ApiResponse::error(
                 message: 'Error deleting user - ' . $e->getMessage(),
-                code: $e->getCode()
+                code: $e->getCode() ?: 500
             );
         }
     }

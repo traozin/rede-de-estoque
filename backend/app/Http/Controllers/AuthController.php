@@ -28,11 +28,7 @@ class AuthController extends Controller {
             ]);
 
             if ($validator->fails()) {
-                return ApiResponse::error(
-                    message: 'Validation failed',
-                    data: $validator->errors(),
-                    code: 422
-                );
+                return ApiResponse::error(message: 'Validation failed', code: 422, data: $validator->errors());
             }
 
             $user = User::create([
@@ -46,16 +42,16 @@ class AuthController extends Controller {
 
             return ApiResponse::success(
                 message: 'User registered successfully',
+                code: 201,
                 data: [
                     'user' => $user,
                     'token' => $token
-                ],
-                code: 201
+                ]
             );
         } catch (Throwable $e) {
             return ApiResponse::error(
-                message: 'Registration failed ' . $e->getMessage(),
-                code: $e->getCode()
+                message: 'Registration failed ' . $e->getMessage(), 
+                code: $e->getCode() ?: 500
             );
         }
     }
@@ -79,15 +75,15 @@ class AuthController extends Controller {
 
             return ApiResponse::success(
                 message: 'Login successful',
+                code: 200,
                 data: [
                     'token' => $token
-                ],
-                code: 200
+                ]
             );
         } catch (Throwable $e) {
             return ApiResponse::error(
-                message: 'Login failed ' . $e->getMessage(),
-                code: $e->getCode()
+                message: 'Login failed ' . $e->getMessage(), 
+                code: $e->getCode() ?: 500
             );
         }
     }
@@ -99,14 +95,11 @@ class AuthController extends Controller {
      */
     public function me() {
         try {
-            return ApiResponse::success(
-                message: 'User fetched successfully',
-                data: auth()->user()
-            );
+            return ApiResponse::success(message: 'User fetched successfully', code: 200, data: auth()->user());
         } catch (Throwable $e) {
             return ApiResponse::error(
-                message: 'Failed to fetch user ' . $e->getMessage(),
-                code: $e->getCode()
+                message: 'Failed to fetch user ' . $e->getMessage(), 
+                code: $e->getCode() ?: 500
             );
         }
     }
@@ -119,14 +112,11 @@ class AuthController extends Controller {
     public function logout() {
         try {
             auth()->logout();
-            return ApiResponse::success(
-                message: 'User logged out successfully',
-                code: 200
-            );
+            return ApiResponse::success(message: 'User logged out successfully', code: 200);
         } catch (Throwable $e) {
             return ApiResponse::error(
-                message: 'Logout failed ' . $e->getMessage(),
-                code: $e->getCode()
+                message: 'Logout failed ' . $e->getMessage(), 
+                code: $e->getCode() ?: 500
             );
         }
     }
@@ -138,13 +128,17 @@ class AuthController extends Controller {
      */
     public function refresh() {
         try {
-            return response()->json([
-                'token' => auth()->refresh()
-            ]);
+            return ApiResponse::success(
+                message: 'Token refreshed successfully',
+                code: 200,
+                data: [
+                    'token' => auth()->refresh()
+                ]
+            );
         } catch (Throwable $e) {
             return ApiResponse::error(
-                message: 'Token refresh failed ' . $e->getMessage(),
-                code: $e->getCode()
+                message: 'Token refresh failed ' . $e->getMessage(), 
+                code: $e->getCode() ?: 500
             );
         }
     }
