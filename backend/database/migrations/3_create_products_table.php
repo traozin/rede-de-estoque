@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->text('description')->nullable();
             $table->integer('quantity')->default(0);
             $table->decimal('price', 10, 2);
-            $table->foreignId('category_id')->constrained()->onDelete('cascade');
+            $table->string('category');
             $table->string('sku')->unique();
             $table->timestamps();
         });
