@@ -19,7 +19,7 @@ class ApiResponse {
             'Error',
             $message,
             $data,
-            $code
+            $code 
         );
     }
 
@@ -30,6 +30,6 @@ class ApiResponse {
             'data' => $data
         ], true);
 
-        return response()->json($array, $code);
+        return response()->json($array, (int) $code);
     }
 }

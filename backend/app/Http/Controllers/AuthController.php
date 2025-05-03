@@ -28,7 +28,7 @@ class AuthController extends Controller {
             ]);
 
             if ($validator->fails()) {
-                return ApiResponse::error(message: 'Validation failed', code: 422, data: $validator->errors());
+                return ApiResponse::error('Validation failed', 422, $validator->errors());
             }
 
             $user = User::create([
@@ -41,18 +41,15 @@ class AuthController extends Controller {
             $token = JWTAuth::fromUser($user);
 
             return ApiResponse::success(
-                message: 'User registered successfully',
-                code: 201,
-                data: [
+                'User registered successfully',
+                201,
+                [
                     'user' => $user,
                     'token' => $token
                 ]
             );
         } catch (Throwable $e) {
-            return ApiResponse::error(
-                message: 'Registration failed ' . $e->getMessage(), 
-                code: $e->getCode() ?: 500
-            );
+            return ApiResponse::error('Registration failed ' . $e->getMessage(), $e->getCode() ?: 500);
         }
     }
 
@@ -67,24 +64,18 @@ class AuthController extends Controller {
             $credentials = $request->only('email', 'password');
 
             if (!$token = JWTAuth::attempt($credentials)) {
-                return ApiResponse::error(
-                    message: 'Unauthorized',
-                    code: 401
-                );
+                return ApiResponse::error('Unauthorized', 401);
             }
 
             return ApiResponse::success(
-                message: 'Login successful',
-                code: 200,
-                data: [
+                'Login successful',
+                200,
+                [
                     'token' => $token
                 ]
             );
         } catch (Throwable $e) {
-            return ApiResponse::error(
-                message: 'Login failed ' . $e->getMessage(), 
-                code: $e->getCode() ?: 500
-            );
+            return ApiResponse::error('Login failed ' . $e->getMessage(), $e->getCode() ?: 500);
         }
     }
 
@@ -95,12 +86,9 @@ class AuthController extends Controller {
      */
     public function me() {
         try {
-            return ApiResponse::success(message: 'User fetched successfully', code: 200, data: auth()->user());
+            return ApiResponse::success('User fetched successfully', 200, auth()->user());
         } catch (Throwable $e) {
-            return ApiResponse::error(
-                message: 'Failed to fetch user ' . $e->getMessage(), 
-                code: $e->getCode() ?: 500
-            );
+            return ApiResponse::error('Failed to fetch user ' . $e->getMessage(), $e->getCode() ?: 500);
         }
     }
 
@@ -112,12 +100,9 @@ class AuthController extends Controller {
     public function logout() {
         try {
             auth()->logout();
-            return ApiResponse::success(message: 'User logged out successfully', code: 200);
+            return ApiResponse::success('User logged out successfully', 200);
         } catch (Throwable $e) {
-            return ApiResponse::error(
-                message: 'Logout failed ' . $e->getMessage(), 
-                code: $e->getCode() ?: 500
-            );
+            return ApiResponse::error('Logout failed ' . $e->getMessage(), $e->getCode() ?: 500);
         }
     }
 
@@ -129,16 +114,16 @@ class AuthController extends Controller {
     public function refresh() {
         try {
             return ApiResponse::success(
-                message: 'Token refreshed successfully',
-                code: 200,
-                data: [
+                'Token refreshed successfully',
+                200,
+                [
                     'token' => auth()->refresh()
                 ]
             );
         } catch (Throwable $e) {
             return ApiResponse::error(
-                message: 'Token refresh failed ' . $e->getMessage(), 
-                code: $e->getCode() ?: 500
+                'Token refresh failed ' . $e->getMessage(),
+                $e->getCode() ?: 500
             );
         }
     }

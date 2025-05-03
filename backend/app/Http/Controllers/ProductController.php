@@ -15,13 +15,9 @@ class ProductController extends Controller {
         try {
             $products = Product::all();
 
-            return ApiResponse::success(
-                'Lista de produtos',
-                200,
-                $products
-            );
+            return ApiResponse::success('Products retrieved successfully', 200, $products);
         } catch (Throwable $e) {
-            return ApiResponse::error('Erro ao listar produtos - ' . $e->getMessage(), 500);
+            return ApiResponse::error('Error listing products - ' . $e->getMessage(), 500);
         }
     }
 
@@ -38,15 +34,11 @@ class ProductController extends Controller {
 
             $product = Product::create($validated);
 
-            return ApiResponse::success(
-                'Produto criado com sucesso',
-                201,
-                $product
-            );
+            return ApiResponse::success('Product created successfully', 201, $product);
         } catch (ValidationException $e) {
-            return ApiResponse::error('Erro de validação', 422, $e->errors());
+            return ApiResponse::error('Validation error', 422, $e->errors());
         } catch (Throwable $e) {
-            return ApiResponse::error('Erro ao criar produto - ' . $e->getMessage(), 500);
+            return ApiResponse::error('Error creating product - ' . $e->getMessage(), 500);
         }
     }
 
@@ -54,13 +46,9 @@ class ProductController extends Controller {
         try {
             $product = Product::findOrFail($id);
 
-            return ApiResponse::success(
-                'Produto encontrado',
-                200,
-                $product
-            );
+            return ApiResponse::success('Product retrieved successfully', 200, $product);
         } catch (Throwable $e) {
-            return ApiResponse::error('Produto não encontrado - ' . $e->getMessage(), 404);
+            return ApiResponse::error('Error fetching product - ' . $e->getMessage(), 404);
         }
     }
 
@@ -79,15 +67,11 @@ class ProductController extends Controller {
 
             $product->update($validated);
 
-            return ApiResponse::success(
-                'Produto atualizado com sucesso',
-                200,
-                $product
-            );
+            return ApiResponse::success('Product updated successfully', 200, $product);
         } catch (ValidationException $e) {
-            return ApiResponse::error('Erro de validação', 422, $e->errors());
+            return ApiResponse::error('Validation error', 422, $e->errors());
         } catch (Throwable $e) {
-            return ApiResponse::error('Erro ao atualizar produto - ' . $e->getMessage(), 500);
+            return ApiResponse::error('Error updating product - ' . $e->getMessage(), 500);
         }
     }
 
@@ -96,10 +80,7 @@ class ProductController extends Controller {
             $product = Product::findOrFail($id);
             $product->delete();
 
-            return ApiResponse::success(
-                'Produto excluído com sucesso',
-                200
-            );
+            return ApiResponse::success('Produto excluído com sucesso', 200);
         } catch (Throwable $e) {
             return ApiResponse::error('Erro ao excluir produto - ' . $e->getMessage(), 500);
         }
