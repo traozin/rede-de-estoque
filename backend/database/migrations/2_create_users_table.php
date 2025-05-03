@@ -4,18 +4,17 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
+    public function up(): void {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
+            $table->foreignId('role_id')->constrained();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
@@ -35,15 +34,39 @@ return new class extends Migration
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
+
+        $this->populateRole();
+        $this->populateUser();
     }
 
     /**
      * Reverse the migrations.
      */
-    public function down(): void
-    {
+    public function down(): void {
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
+    }
+
+    private function populateRole() {
+        DB::table('roles')->insertOrIgnore([
+            ['id' => 1, 'name' => 'Administrador'],
+            ['id' => 2, 'name' => 'Operador'],
+            ['id' => 3, 'name' => 'Usuário comum'],
+        ]);
+    }
+
+    private function populateUser() {
+        DB::table('users')->insertOrIgnore([
+            [
+                'id' => 1,
+                'name' => 'Admin User',
+                'email' => 'admin@example.com',
+                'password' => bcrypt('password'),
+                'role_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
     }
 };
