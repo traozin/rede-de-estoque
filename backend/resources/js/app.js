@@ -1,12 +1,17 @@
+import { createInertiaApp } from '@inertiajs/react';
+import { createRoot } from 'react-dom/client';
 import React from 'react';
-import { InertiaApp } from '@inertiajs/inertia-react';
-import ReactDOM from 'react-dom';
 import '../css/app.css';
 
-const app = document.getElementById('app');
+createInertiaApp({
+  id: 'app',
 
-const initialPage = JSON.parse(app.dataset.page);
+  resolve: name => {
+    const pages = import.meta.glob('./Pages/**/*.jsx', { eager: true });
+    return pages[`./Pages/${name}.jsx`];
+  },
 
-ReactDOM.createRoot(app).render(
-  <InertiaApp initialPage={initialPage} />
-);
+  setup({ el, App, props }) {
+    createRoot(el).render(React.createElement(App, props));
+  },
+});
