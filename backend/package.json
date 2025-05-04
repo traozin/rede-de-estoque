@@ -19,6 +19,7 @@
     "dependencies": {
         "@inertiajs/inertia": "^0.11.1",
         "@inertiajs/inertia-react": "^0.8.1",
+        "@inertiajs/react": "^2.0.8",
         "@tailwindcss/postcss": "^4.1.5",
         "react": "^18.3.1",
         "react-dom": "^18.3.1"
