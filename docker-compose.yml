@@ -41,10 +41,9 @@ services:
     image: react_app
     restart: unless-stopped
     ports:
-      - "3000:3000"
-    volumes:
-      - ./frontend:/app
+          - "5173:5173"
     environment:
+      - VITE_HOST=0.0.0.0
       - CHOKIDAR_USEPOLLING=true
 
 volumes:

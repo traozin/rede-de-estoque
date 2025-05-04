@@ -2,8 +2,12 @@ FROM node:18-alpine
 
 WORKDIR /app
 
+COPY package.json package-lock.json ./
+
+RUN npm install
+
 COPY . .
 
-RUN chmod +x entrypoint.sh
+EXPOSE 5173
 
-ENTRYPOINT ["sh", "./entrypoint.sh"]
+CMD ["npm", "run", "dev"]
