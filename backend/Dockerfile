@@ -1,4 +1,3 @@
-# Usa a imagem oficial do PHP
 FROM php:8.2-cli
 
 RUN apt-get update && apt-get install -y \
@@ -11,8 +10,12 @@ RUN apt-get update && apt-get install -y \
     unzip \
     libzip-dev \
     netcat-openbsd \
-    && docker-php-ext-install pdo_mysql mbstring zip exif pcntl \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+    gnupg \
+    ca-certificates && \
+    curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y nodejs && \
+    docker-php-ext-install pdo_mysql mbstring zip exif pcntl && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 

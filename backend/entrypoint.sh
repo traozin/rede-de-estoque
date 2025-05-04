@@ -18,4 +18,12 @@ fi
 
 php artisan key:generate
 php artisan migrate --force
+
+if [ -f package.json ]; then
+  echo "Instalando dependências do npm..."
+  npm install
+  echo "Rodando build de desenvolvimento..."
+  npm run dev &
+fi
+
 php artisan serve --host=0.0.0.0 --port=8000
