@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import AuthWrapper from "@/components/AuthWrapper";
+import { DataGrid } from "@mui/x-data-grid";
 
 function Dashboard() {
     const [products, setProducts] = useState([]);
@@ -44,11 +45,40 @@ function Dashboard() {
         return <div>Erro: {error}</div>;
     }
 
+    const columns = [
+        { field: "id", headerName: "ID", width: 70 },
+        { field: "name", headerName: "Nome", width: 200 },
+        { field: "description", headerName: "Descrição", width: 250 },
+        { field: "quantity", headerName: "Quantidade", width: 120 },
+        {
+            field: "price",
+            headerName: "Preço",
+            width: 120,
+            valueFormatter: (value) =>
+                value
+                    ? new Intl.NumberFormat("pt-BR", {
+                          style: "currency",
+                          currency: "BRL",
+                      }).format(value)
+                    : "R$ 0,00",
+        },
+        { field: "category", headerName: "Categoria", width: 150 },
+        { field: "sku", headerName: "SKU", width: 150 },
+    ];
+
     return (
         <AuthWrapper>
             <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
                 <h1>Dashboard</h1>
-                <p>Bem-vindo ao painel de controle!</p>
+                <div style={{ height: 600, width: "100%", marginTop: "20px" }}>
+                    <DataGrid
+                        rows={products}
+                        columns={columns}
+                        pageSize={10}
+                        rowsPerPageOptions={[10, 20, 50]}
+                        getRowId={(row) => row.id}
+                    />
+                </div>
             </div>
         </AuthWrapper>
     );
