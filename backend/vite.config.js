@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import laravel from 'laravel-vite-plugin';
+import tailwindcss from '@tailwindcss/vite'
 import path from 'path';
 
 export default defineConfig({
@@ -10,9 +11,10 @@ export default defineConfig({
       refresh: true,
     }),
     react(),
+    tailwindcss(),
   ],
   server: {
-    host: '0.0.0.0',
+    host: 'localhost',
     port: 5173,
     strictPort: true,
     cors: {
@@ -20,7 +22,7 @@ export default defineConfig({
       credentials: true,
     },
     hmr: {
-      host: '172.17.251.157', // <- IP do WSL
+      host: 'localhost',
       protocol: 'ws',
       port: 5173,
     },
@@ -28,7 +30,7 @@ export default defineConfig({
       usePolling: true,
       interval: 100
     }
-  },  
+  }, 
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'resources/js'),

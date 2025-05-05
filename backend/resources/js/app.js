@@ -4,13 +4,9 @@ import React from 'react';
 import '../css/app.css';
 
 createInertiaApp({
-  id: 'app',
-
   resolve: name => {
-    const pages = import.meta.glob('./Pages/**/*.jsx', { eager: true });
-    return pages[`./Pages/${name}.jsx`];
+    return import(`./pages/${name}.jsx`).then(module => module.default);
   },
-
   setup({ el, App, props }) {
     createRoot(el).render(React.createElement(App, props));
   },
