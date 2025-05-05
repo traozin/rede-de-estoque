@@ -92,23 +92,28 @@ function Dashboard() {
 
     return (
         <AuthWrapper>
-            <Container>
-                <h1 className="text-3xl font-bold mb-2 text-gray-800">
-                    Dashboard
-                </h1>
-                <p className="text-gray-600 mb-6">
-                    Bem-vindo ao painel de controle!
-                </p>
-                <div className="shadow-lg rounded-lg bg-white">
-                    <DataGrid
-                        rows={products}
-                        columns={columns}
-                        pageSize={10}
-                        rowsPerPageOptions={[10, 20, 50]}
-                        getRowId={(row) => row.id}
-                    />
-                </div>
-            </Container>
+            <div className="flex flex-col items-center justify-center min-h-screen bg-green-200">
+                <Container>
+                    <h1 className="text-3xl font-bold mb-2 text-gray-900">
+                        Dashboard
+                    </h1>
+                    <p className="text-gray-700 mb-6">
+                        Bem-vindo ao painel de controle!
+                    </p>
+                    <div className="shadow-lg rounded-lg bg-white" style={{ height: '80vh', width: '100%' }}>
+                        <DataGrid
+                            rows={products}
+                            columns={columns}
+                            pageSize={10}
+                            rowsPerPageOptions={[10, 20, 50]}
+                            getRowId={(row) => row.id}
+                            disableSelectionOnClick
+                            autoHeight={false}
+                            style={{ overflow: 'auto' }}
+                        />
+                    </div>
+                </Container>
+            </div>
         </AuthWrapper>
     );
 }
