@@ -200,12 +200,12 @@ function Dashboard() {
             field: "price",
             headerName: "Preço",
             width: 120,
-            valueFormatter: (params) =>
-                params.value
+            valueFormatter: (value) =>
+                value
                     ? new Intl.NumberFormat("pt-BR", {
                           style: "currency",
                           currency: "BRL",
-                      }).format(parseFloat(params.value))
+                      }).format(parseFloat(value))
                     : "R$ 0,00",
         },
         { field: "category", headerName: "Categoria", width: 150 },
