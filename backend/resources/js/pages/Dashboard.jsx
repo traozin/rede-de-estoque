@@ -12,9 +12,9 @@ import styled from "styled-components";
 import { Pencil, Trash2 } from "lucide-react";
 
 const IconButtonWrapper = styled.div`
-  position: relative;
-  display: inline-block;
-  overflow: visible;
+    position: relative;
+    display: inline-block;
+    overflow: visible;
 `;
 
 const ModalButton = styled.button`
@@ -43,7 +43,6 @@ function Dashboard() {
     const [openModal, setOpenModal] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [userRole, setUserRole] = useState(null);
-
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -118,12 +117,13 @@ function Dashboard() {
     const handleSaveEdit = async () => {
         const token = localStorage.getItem("token");
         const updatedProduct = { ...selectedProduct };
-
         try {
             const response = await fetch(
-                `/api/v1/produtos/${updatedProduct.id}`,
+                updatedProduct.id
+                    ? `/api/v1/produtos/${updatedProduct.id}`
+                    : "/api/v1/produtos",
                 {
-                    method: "PUT",
+                    method: updatedProduct.id ? "PUT" : "POST",
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${token}`,
@@ -135,18 +135,29 @@ function Dashboard() {
             if (response.ok) {
                 const data = await response.json();
                 setProducts((prev) =>
-                    prev.map((product) =>
-                        product.id === data.id ? data : product
-                    )
+                    updatedProduct.id
+                        ? prev.map((p) => (p.id === data.id ? data : p))
+                        : [...prev, data]
                 );
                 setOpenModal(false);
             } else {
                 const errorData = await response.json();
-                alert("Erro ao salvar as edições: " + errorData.message);
+                let errorMessage = "Erro ao salvar o produto.";
+
+                if (errorData.data) {
+                    errorMessage += "\nDetalhes:";
+                    Object.entries(errorData.data).forEach(([key, value]) => {
+                        errorMessage += `\n- ${key}: ${value}`;
+                    });
+                } else if (errorData.message) {
+                    errorMessage += `\n${errorData.message}`;
+                }
+
+                alert(errorMessage);
             }
         } catch (error) {
-            console.error("Erro ao atualizar produto:", error);
-            alert("Erro ao salvar as edições.");
+            console.error("Erro ao salvar produto:", error);
+            alert("Erro ao salvar.");
         }
     };
 
@@ -248,12 +259,35 @@ function Dashboard() {
         <AuthWrapper>
             <div className="flex flex-col items-center justify-center min-h-screen bg-green-200">
                 <div className="p-8 font-sans w-full max-w-7xl">
-                    <h1 className="text-3xl font-bold mb-4 text-gray-900">
-                        Dashboard
-                    </h1>
-                    <p className="text-gray-700 mb-6">
-                        Bem-vindo ao painel de controle!
-                    </p>
+                    <div className="flex justify-between items-start mb-6">
+                        <div>
+                            <h1 className="text-3xl font-bold text-gray-900">
+                                Dashboard
+                            </h1>
+                            <p className="text-gray-700">
+                                Bem-vindo ao painel de controle!
+                            </p>
+                        </div>
+                        {userRole === ROLE_ADMIN && (
+                            <button
+                                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                                onClick={() => {
+                                    setSelectedProduct({
+                                        name: "",
+                                        description: "",
+                                        quantity: "",
+                                        price: "",
+                                        category: "",
+                                        sku: "",
+                                    });
+                                    setOpenModal(true);
+                                }}
+                            >
+                                + Adicionar Produto
+                            </button>
+                        )}
+                    </div>
+
                     <div className="shadow-lg rounded-lg bg-white">
                         <DataGrid
                             rows={products}
@@ -268,7 +302,6 @@ function Dashboard() {
                 </div>
             </div>
 
-            {/* Modal para edição */}
             <Dialog open={openModal} onClose={handleCloseModal}>
                 <DialogTitle>Edição do Produto</DialogTitle>
                 <DialogContent>
@@ -329,6 +362,18 @@ function Dashboard() {
                                     setSelectedProduct({
                                         ...selectedProduct,
                                         category: e.target.value,
+                                    })
+                                }
+                                fullWidth
+                                margin="normal"
+                            />
+                            <TextField
+                                label="SKU"
+                                value={selectedProduct.sku}
+                                onChange={(e) =>
+                                    setSelectedProduct({
+                                        ...selectedProduct,
+                                        sku: e.target.value,
                                     })
                                 }
                                 fullWidth
