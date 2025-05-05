@@ -23,10 +23,9 @@ function Login() {
                 const token = data.data.token;
 
                 localStorage.setItem("token", token);
-                alert("Login successful!");
 
                 router.push({
-                    url: "/dashboard",
+                    url: "/",
                     component: "Dashboard",
                     props: {
                         token,
