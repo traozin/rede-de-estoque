@@ -59,13 +59,22 @@ return new class extends Migration {
     private function populateUser() {
         DB::table('users')->insertOrIgnore([
             [
-                'id' => 1,
-                'name' => 'Admin User',
-                'email' => 'admin@example.com',
-                'password' => bcrypt('password'),
-                'role_id' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
+            'id' => 1,
+            'name' => 'Admin User',
+            'email' => 'admin@example.com',
+            'password' => bcrypt('password'),
+            'role_id' => 1,
+            'created_at' => now(),
+            'updated_at' => now(),
+            ],
+            [
+            'id' => 2,
+            'name' => 'Operator User',
+            'email' => 'operator@example.com',
+            'password' => bcrypt('password'),
+            'role_id' => 2,
+            'created_at' => now(),
+            'updated_at' => now(),
             ],
         ]);
     }
