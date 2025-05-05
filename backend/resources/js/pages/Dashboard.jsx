@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from "react";
 import AuthWrapper from "@/components/AuthWrapper";
 import { DataGrid } from "@mui/x-data-grid";
+import styled from "styled-components";
+
+const Container = styled.div`
+    padding: 2rem;
+    font-family: "Arial", sans-serif;
+    @media (max-width: 768px) {
+        padding: 1rem;
+    }
+`;
 
 function Dashboard() {
     const [products, setProducts] = useState([]);
@@ -22,7 +31,11 @@ function Dashboard() {
 
                 if (response.ok) {
                     const data = await response.json();
-                    setProducts(data.data);
+                    // Simula carregamento de 2s antes de exibir
+                    setTimeout(() => {
+                        setProducts(data.data);
+                        setLoading(false);
+                    }, 2000);
                 } else {
                     const errorData = await response.json();
                     setError(errorData.message);
@@ -30,20 +43,14 @@ function Dashboard() {
             } catch (error) {
                 setError("Ocorreu um erro ao carregar os produtos.");
             } finally {
-                setLoading(false);
+                setTimeout(() => {
+                    setLoading(false);
+                }, 2000);
             }
         };
 
         fetchProducts();
     }, []);
-
-    if (loading) {
-        return <div>Carregando...</div>;
-    }
-
-    if (error) {
-        return <div>Erro: {error}</div>;
-    }
 
     const columns = [
         { field: "id", headerName: "ID", width: 70 },
@@ -54,23 +61,45 @@ function Dashboard() {
             field: "price",
             headerName: "Preço",
             width: 120,
-            valueFormatter: (value) =>
-                value
+            valueFormatter: (params) =>
+                params
                     ? new Intl.NumberFormat("pt-BR", {
                           style: "currency",
                           currency: "BRL",
-                      }).format(value)
+                      }).format(parseFloat(params))
                     : "R$ 0,00",
         },
         { field: "category", headerName: "Categoria", width: 150 },
         { field: "sku", headerName: "SKU", width: 150 },
     ];
 
+    if (loading) {
+        return (
+            <div className="flex flex-col items-center justify-center h-screen text-gray-600">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500 border-solid mb-4"></div>
+                <p className="text-lg">Carregando...</p>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <Container>
+                <p className="text-red-600 font-medium">Erro: {error}</p>
+            </Container>
+        );
+    }
+
     return (
         <AuthWrapper>
-            <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-                <h1>Dashboard</h1>
-                <div style={{ height: 600, width: "100%", marginTop: "20px" }}>
+            <Container>
+                <h1 className="text-3xl font-bold mb-2 text-gray-800">
+                    Dashboard
+                </h1>
+                <p className="text-gray-600 mb-6">
+                    Bem-vindo ao painel de controle!
+                </p>
+                <div className="shadow-lg rounded-lg bg-white">
                     <DataGrid
                         rows={products}
                         columns={columns}
@@ -79,7 +108,7 @@ function Dashboard() {
                         getRowId={(row) => row.id}
                     />
                 </div>
-            </div>
+            </Container>
         </AuthWrapper>
     );
 }

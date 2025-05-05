@@ -1,8 +1,6 @@
-import { useEffect, useState } from "react";
 import { router } from "@inertiajs/react";
 
 function AuthWrapper({ children }) {
-    const [loading, setLoading] = useState(true);
     const token = localStorage.getItem("token");
 
     if (!token) {
@@ -20,15 +18,10 @@ function AuthWrapper({ children }) {
             if (!res.ok) throw new Error("Token inválido");
             return res.json();
         })
-        .then(() => setLoading(false))
         .catch(() => {
             localStorage.removeItem("token");
             router.visit("/login");
         });
-
-    if (loading) {
-        return <div>Verificando sessão...</div>;
-    }
 
     return children;
 }
