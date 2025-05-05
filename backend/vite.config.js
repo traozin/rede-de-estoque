@@ -12,7 +12,7 @@ export default defineConfig({
     react(),
   ],
   server: {
-    host: true,
+    host: '0.0.0.0',
     port: 5173,
     strictPort: true,
     cors: {
@@ -20,9 +20,15 @@ export default defineConfig({
       credentials: true,
     },
     hmr: {
-      host: 'localhost',
+      host: '172.17.251.157', // <- IP do WSL
+      protocol: 'ws',
+      port: 5173,
     },
-  },
+    watch: {
+      usePolling: true,
+      interval: 100
+    }
+  },  
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'resources/js'),
