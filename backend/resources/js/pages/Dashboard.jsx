@@ -136,8 +136,8 @@ function Dashboard() {
                 const data = await response.json();
                 setProducts((prev) =>
                     updatedProduct.id
-                        ? prev.map((p) => (p.id === data.id ? data : p))
-                        : [...prev, data]
+                        ? prev.map((p) => (p.id === data.data.id ? data.data : p))
+                        : [...prev, data.data]
                 );
                 setOpenModal(false);
             } else {
