@@ -1,17 +1,16 @@
 services:
-  backend:
+  app:
     build:
-      context: ./backend
+      context: .
       dockerfile: Dockerfile
     container_name: laravel_app
     image: laravel_app
     restart: unless-stopped
     working_dir: /var/www
     volumes:
-      - ./backend:/var/www
+      - ./:/var/www
     ports:
       - "8000:8000"
-      - "5173:5173"
     depends_on:
       - mysql
     environment:
